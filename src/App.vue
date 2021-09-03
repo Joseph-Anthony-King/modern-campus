@@ -36,8 +36,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { mapActions } from "vuex";
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex';
 
 export default Vue.extend({
   name: 'App',
@@ -45,17 +44,14 @@ export default Vue.extend({
   data: () => ({
     //
   }),
-  methods: {
-    ...mapActions(['updateApiUrl','updateApiKey']),
-  },
   computed: {
-    ...mapGetters(['getApiUrl', 'getApiKey']),
+    ...mapGetters('ApiModule', ['getApiUrl', 'getApiKey'])
   },
-  created(){
-    this.updateApiUrl(process.env.VUE_APP_API_URL),
-    this.updateApiKey(process.env.VUE_APP_API_KEY)
-    console.log("api url:", this.getApiUrl);
-    console.log("api key:", this.getApiKey);
+  created() {
+    this.$store.commit('ApiModule/updateApiUrl', process.env.VUE_APP_API_URL);
+    this.$store.commit('ApiModule/updateApiKey', process.env.VUE_APP_API_KEY);
+    console.log(this.getApiUrl);
+    console.log(this.getApiKey);
   }
 });
 </script>
