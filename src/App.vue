@@ -26,15 +26,6 @@
       </div>
 
       <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
     </v-app-bar>
 
     <v-main>
@@ -45,6 +36,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { mapActions } from "vuex";
+import { mapGetters } from "vuex";
 
 export default Vue.extend({
   name: 'App',
@@ -52,5 +45,17 @@ export default Vue.extend({
   data: () => ({
     //
   }),
+  methods: {
+    ...mapActions(['updateApiUrl','updateApiKey']),
+  },
+  computed: {
+    ...mapGetters(['getApiUrl', 'getApiKey']),
+  },
+  created(){
+    this.updateApiUrl(process.env.VUE_APP_API_URL),
+    this.updateApiKey(process.env.VUE_APP_API_KEY)
+    console.log("api url:", this.getApiUrl);
+    console.log("api key:", this.getApiKey);
+  }
 });
 </script>
