@@ -4,6 +4,7 @@ import {
   UPDATE_API_URL,
   UPDATE_API_KEY
 } from './mutation-types';
+import ContactModule from './modules/ContactModule/index';
 
 Vue.use(Vuex)
 
@@ -37,5 +38,6 @@ export default new Vuex.Store({
     },
   },
   modules: {
+    ContactModule
   }
 })
