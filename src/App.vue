@@ -50,8 +50,6 @@ export default Vue.extend({
   created() {
     this.$store.commit('ApiModule/updateApiUrl', process.env.VUE_APP_API_URL);
     this.$store.commit('ApiModule/updateApiKey', process.env.VUE_APP_API_KEY);
-    console.log(this.getApiUrl);
-    console.log(this.getApiKey);
   }
 });
 </script>
