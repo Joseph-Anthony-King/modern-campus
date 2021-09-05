@@ -33,6 +33,10 @@ export class Contact implements IContact {
     this._lastName = lastname;
   }
 
+  public get fullName() {
+    return this._firstName + ' ' + this._lastName;
+  }
+
   public get address() {
     return this._address;
   }

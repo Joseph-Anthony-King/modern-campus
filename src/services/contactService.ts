@@ -1,12 +1,12 @@
 import axios from 'axios';
-import { ContactRespository } from '@/../lib/respositories/contactRepository/index'
+import { ContactRepository } from '@/../lib/repositories/contactRepository/index'
 import { Contact } from '@/../lib/classes/contact'
 
 const getContacts = async function(): Promise<unknown> {
 
   try {
 
-    const response = await ContactRespository.getContacts();
+    const response = await ContactRepository.getContacts();
     let contacts: Contact[] = [];
   
     response.data.result.forEach((element: unknown) => {

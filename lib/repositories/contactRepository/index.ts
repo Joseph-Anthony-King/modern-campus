@@ -27,8 +27,10 @@ const getContact = async function(id: string): Promise<any> {
 
 const getContacts = async function (): Promise<any> {
   try {
-    const apikey = store.getters["ApiStore/getApiUrl"];
+    console.log("running getContacts...")
+    const apikey = store.getters["ApiModule/getApiKey"];
     const params = `?apikey=${apikey}`;
+    console.log(params)
     const response = await axios({
       method: 'get',
       url: `${getContactsEndpoint}${params}`,
@@ -97,7 +99,7 @@ const deleteContact = async function (id: string): Promise<any> {
   }
 };
 
-export const ContactRespository = {
+export const ContactRepository = {
   getContact,
   getContacts,
   createContact,
