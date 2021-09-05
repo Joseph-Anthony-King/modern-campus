@@ -7,7 +7,7 @@ import {
   deleteContactEndpoint } from './endpoints';
 import { Contact } from '../../classes/contact'
 
-const getContact = async function(id: string) {
+const getContact = async function(id: string): Promise<any> {
   try {
     const apikey = store.getters["ApiStore/getApiUrl"];
     const params = `?apikey=${apikey}&id=${id}`;
@@ -16,6 +16,7 @@ const getContact = async function(id: string) {
       url: `${getContactEndpoint}${params}`,
       headers: {
         "Content-Type": "application/json",
+        "Accept":"*/*"
       }
     });
     return response;
@@ -24,7 +25,7 @@ const getContact = async function(id: string) {
   }
 };
 
-const getContacts = async function () {
+const getContacts = async function (): Promise<any> {
   try {
     const apikey = store.getters["ApiStore/getApiUrl"];
     const params = `?apikey=${apikey}`;
@@ -33,15 +34,20 @@ const getContacts = async function () {
       url: `${getContactsEndpoint}${params}`,
       headers: {
         "Content-Type": "application/json",
+        "Accept":"*/*"
       }
     });
     return response;
   } catch (error) {
-    return error;
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.message);
+    } else {
+      throw new Error();
+    }
   }
 };
 
-const createContact = async function (data: Contact) {
+const createContact = async function (data: Contact): Promise<any> {
   try {
     const apikey = store.getters["ApiStore/getApiUrl"];
     const response = await axios({
@@ -49,6 +55,7 @@ const createContact = async function (data: Contact) {
       url: `${createContactEndpoint}`,
       headers: {
         "Content-Type": "application/json",
+        "Accept":"*/*"
       },
       data: {
         'apikey': apikey,
@@ -69,7 +76,7 @@ const createContact = async function (data: Contact) {
   }
 };
 
-const deleteContact = async function (id: string) {
+const deleteContact = async function (id: string): Promise<any> {
   try {
     const apikey = store.getters["ApiStore/getApiUrl"];
     const response = await axios({
@@ -77,6 +84,7 @@ const deleteContact = async function (id: string) {
       url: `${deleteContactEndpoint}`,
       headers: {
         "Content-Type": "application/json",
+        "Accept":"*/*"
       },
       data: {
         'apikey': apikey,

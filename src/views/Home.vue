@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import HomeView from "../components/HomeView.vue";
+import HomeView from "../components/views/HomeView.vue";
 
 export default Vue.extend({
   name: "Home",

@@ -1,10 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
+    <v-app-bar app color="primary" dark>
       <div class="d-flex align-center">
         <v-img
           alt="Vuetify Logo"
@@ -29,27 +25,28 @@
     </v-app-bar>
 
     <v-main>
-      <router-view/>
+      <router-view />
     </v-main>
   </v-app>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { mapGetters } from 'vuex';
+import Vue from "vue";
+import { mapGetters } from "vuex";
+import Store from "@/store/index";
 
 export default Vue.extend({
-  name: 'App',
+  name: "App",
 
   data: () => ({
     //
   }),
   computed: {
-    ...mapGetters('ApiModule', ['getApiUrl', 'getApiKey'])
+    ...mapGetters("ApiModule", ["getApiUrl", "getApiKey"]),
   },
-  created() {
-    this.$store.commit('ApiModule/updateApiUrl', process.env.VUE_APP_API_URL);
-    this.$store.commit('ApiModule/updateApiKey', process.env.VUE_APP_API_KEY);
-  }
+  async created() {
+    Store.commit("ApiModule/updateApiUrl", process.env.VUE_APP_API_URL);
+    Store.commit("ApiModule/updateApiKey", process.env.VUE_APP_API_KEY);
+  },
 });
 </script>

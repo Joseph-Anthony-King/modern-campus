@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import ContactsView from "../components/ContactsView.vue";
+import ContactsView from "../components/views/ContactsView.vue";
 
 export default Vue.extend({
   name: "Contacts",
