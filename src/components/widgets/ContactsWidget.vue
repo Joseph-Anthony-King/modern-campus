@@ -132,7 +132,7 @@ export default class ContactsWidget extends Vue {
   }
 
   async deleteContact(contact: Contact) {
-    const result = await deleteContactHelper(
+    await deleteContactHelper(
       contact.id,
       contact.fullName, 
       this);
