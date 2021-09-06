@@ -12,6 +12,14 @@
               hide-details
             ></v-text-field>
           </v-card-title>
+          <v-card-title>
+            <v-select
+              v-model="selectedFilter"
+              :items="filters"
+              item-text="label"
+              item-value="value"
+            ></v-select>
+          </v-card-title>
           <v-data-table
             :headers="headers"
             :items="contacts"
@@ -63,7 +71,7 @@
                     mdi-account
                   </v-icon>
                 </template>
-                <span>Look Up {{ item.fullName }}</span>
+                <span>Review Contact Info for {{ item.fullName }}</span>
               </v-tooltip>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
@@ -152,7 +160,14 @@ import Component from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { mapGetters } from 'vuex';
 import { Contact } from '@/../lib/classes/contact';
-import { deleteContactHelper } from '@/helpers/contacts/contactHelper'
+import { 
+  deleteContactHelper, 
+  deleteContactHelperCore } from '@/helpers/contacts/contactHelper';
+import { 
+  ToastMethods, 
+  showToast,
+  actionToastOptions,
+  defaultToastOptions } from '@/helpers/vue-toasted/toastHelper';
 
 @Component({
   computed: { ...mapGetters('ContactStore',{
@@ -173,16 +188,47 @@ export default class ContactsWidget extends Vue {
       sortable: false,
       value: "name",
     },
-    { text: "First Name", value: "firstName" },
-    { text: "Last Name", value: "lastName" },
-    { text: "Email", value: "email" },
-    { text: "Phone", value: "phone" },
+    { 
+      text: "First Name", 
+      filterable: true, 
+      value: "firstName" },
+    { 
+      text: "Last Name", 
+      filterable: true, 
+      value: "lastName" },
+    { 
+      text: "Email", 
+      filterable: true, 
+      value: "email" },
+    { 
+      text: "Phone", 
+      filterable: false, 
+      value: "phone" },
     {
       text: "Actions",
       sortable: false,
       value: "actions"
     },
   ];
+  filters = [
+    {
+      label: "All Fields ( First Name, Last Name, and Email )",
+      value: 0
+    },
+    {
+      label: "Filter by First Name",
+      value: 1
+    },
+    {
+      label: "Filter by Last Name",
+      value: 2
+    },
+    {
+      label: "Filter by Email",
+      value: 3
+    }
+  ];
+  selectedFilter = this.filters[0];
 
   addContact() {
     const contact = new Contact();
@@ -200,11 +246,50 @@ export default class ContactsWidget extends Vue {
     this.$store.commit('ContactStore/updateSelectedContact', contact);
   }
 
-  deleteSelected(){
-    console.log("Following Contacts will be deleted:")
-    this.selected.forEach(contact => {
-      console.log(contact.fullName);
-    });
+  async deleteSelected() {
+      const action = [
+        {
+          text: 'Yes',
+          onClick: async (e, toastObject) => {
+            toastObject.goAway(0);
+
+            this.selected.forEach(async (contact) => {
+              await deleteContactHelperCore(
+                contact.id,
+                null, 
+                this);
+            });
+            this.$forceUpdate();
+
+            showToast(
+              this,
+              ToastMethods['success'],
+              "Selected contacts have been deleted",
+              defaultToastOptions()
+            );            
+          },
+        },
+        {
+          text: 'No',
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+          },
+        },
+      ];
+
+      const pronoun = this.selected.length === 1 ? 'this' : 'these';
+      const contacts = this.selected.length === 1 ? 'contact' : 'contacts';
+
+      showToast(
+        this,
+        ToastMethods['show'],
+        `Are you sure you want to delete ${pronoun} selected ${contacts}?`,
+        actionToastOptions(action, null)
+      );
+
+
+
+
   }
 
   emailContact(email: string) {
@@ -226,6 +311,27 @@ export default class ContactsWidget extends Vue {
   onSelectedContactChanged(value: Contact[], oldValue: Contact[]) {
     this.contacts = value;
     this.$forceUpdate();
+  }
+
+  @Watch('selectedFilter')
+  onSelectedFilterChanged(value: any, oldValue: any) {
+    if (value === 0) {
+      this.headers[1].filterable = true;
+      this.headers[2].filterable = true;
+      this.headers[3].filterable = true;
+    } else if (value === 1) {
+      this.headers[1].filterable = true;
+      this.headers[2].filterable = false;
+      this.headers[3].filterable = false;
+    } else if (value === 2) {
+      this.headers[1].filterable = false;
+      this.headers[2].filterable = true;
+      this.headers[3].filterable = false;
+    } else {
+      this.headers[1].filterable = false;
+      this.headers[2].filterable = false;
+      this.headers[3].filterable = true;
+    }
   }
 
   created() {      

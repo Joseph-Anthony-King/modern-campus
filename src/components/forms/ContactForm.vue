@@ -147,7 +147,7 @@ import { mapGetters } from 'vuex';
 import Store from '@/store/index';
 import { Contact } from '@/../lib/classes/contact';
 import { contactService } from '@/services/contactService';
-import { deleteContactHelper } from '@/helpers/contacts/contactHelper'
+import { deleteContactHelper } from '@/helpers/contacts/contactHelper';
 import { 
   ToastMethods, 
   showToast,
