@@ -1,15 +1,17 @@
 import { VuexModule, Module, Mutation } from 'vuex-module-decorators';
-import { Contact } from "@/../lib/classes/contact";
+import { Contact } from '@/../lib/classes/contact';
 import { ModuleOptions } from 'vuex-module-decorators/dist/types/moduleoptions';
 
-@Module({ namespaced: true, name: 'ContactModule' })
-export default class ContactModule extends VuexModule {
+@Module({ namespaced: true, name: 'contactStore' })
+export default class ContactStore extends VuexModule {
   public selectedContact: null | Contact;
   public contacts: Contact[];
+  public lookingUp: boolean;
   constructor() {
     super(<ModuleOptions>{});
     this.selectedContact = null;
     this.contacts = [];
+    this.lookingUp = false;
   }
   @Mutation
   updateSelectedContact(contact: Contact): void {
@@ -37,10 +39,17 @@ export default class ContactModule extends VuexModule {
       this.contacts.push(contact);
     }
   }
+  @Mutation
+  updateLookUp(lookUp: boolean): void {
+    this.lookingUp = lookUp;
+  }
   get getSelectedContact(): null | Contact {
     return this.selectedContact;
   }
   get getContacts(): Contact[] {
     return this.contacts;
+  }
+  get getLookUp(): boolean {
+    return this.lookingUp;
   }
 }

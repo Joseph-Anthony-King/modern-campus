@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import ApiModule from './modules/apiModule/index';
-import ContactModule from './modules/contactModule/index';
+import ApiStore from './modules/apiStore/index';
+import ContactStore from './modules/contactStore/index';
 
 Vue.use(Vuex)
 
@@ -11,7 +11,7 @@ export default new Vuex.Store({
   actions: { },
   getters: { },
   modules: {
-    ApiModule,
-    ContactModule
+    ApiStore,
+    ContactStore
   }
 })

@@ -1,6 +1,6 @@
 import store from '../../../src/store';
 
-const baseUrl = store.getters["ApiModule/getApiUrl"];
+const baseUrl = store.getters['ApiStore/getApiUrl'];
 
 export const getContactEndpoint = `${baseUrl}/address/view`;
 export const getContactsEndpoint = `${baseUrl}/address/list`;

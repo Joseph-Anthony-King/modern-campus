@@ -10,4 +10,5 @@ export interface IContact {
   zipcode: string,
   email: string,
   phone: string,
+  rawPhone: string
 }

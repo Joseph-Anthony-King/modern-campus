@@ -1,8 +1,8 @@
 import { VuexModule, Module, Mutation } from 'vuex-module-decorators';
 import { ModuleOptions } from 'vuex-module-decorators/dist/types/moduleoptions';
 
-@Module({ namespaced: true, name: 'apiModule' })
-export default class ApiModule extends VuexModule {
+@Module({ namespaced: true, name: 'apiStore' })
+export default class ApiStore extends VuexModule {
   public apiUrl: string;
   public apiKey: string;
   constructor() {

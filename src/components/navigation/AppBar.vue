@@ -71,8 +71,11 @@
 }
 </style>
 
-<script>
-export default {
-  name: "AppBar"
+<script lang='ts'>
+import Vue from 'vue';
+import Component from 'vue-class-component';
+
+@Component
+export default class AppBar extends Vue {
 }
 </script>

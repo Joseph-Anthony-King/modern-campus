@@ -2,15 +2,15 @@
   <home-view />
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import HomeView from "../components/views/HomeView.vue";
+<script lang='ts'>
+import Vue from 'vue';
+import Component from 'vue-class-component';
+import HomeView from '../components/views/HomeView.vue';
 
-export default Vue.extend({
-  name: "Home",
-
-  components: {
-    HomeView,
-  },
-});
+@Component({
+  components: { HomeView }
+})
+export default class Home extends Vue {
+  
+}
 </script>

@@ -27,10 +27,8 @@ const getContact = async function(id: string): Promise<any> {
 
 const getContacts = async function (): Promise<any> {
   try {
-    console.log("running getContacts...")
-    const apikey = store.getters["ApiModule/getApiKey"];
+    const apikey = store.getters['ApiStore/getApiKey'];
     const params = `?apikey=${apikey}`;
-    console.log(params)
     const response = await axios({
       method: 'get',
       url: `${getContactsEndpoint}${params}`,

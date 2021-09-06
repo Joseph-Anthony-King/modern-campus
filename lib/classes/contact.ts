@@ -90,6 +90,13 @@ export class Contact implements IContact {
     this._phone = phone;
   }
 
+  public get rawPhone() {
+    return this._phone;
+  }
+  public set rawPhone(phone: string) {
+    this._phone = phone;
+  }
+
   constructor(data?: any) {
     if (data !== null) {
       this.id = data.id !== undefined ? data.id : '';

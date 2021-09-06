@@ -27,19 +27,47 @@
             </template>
             
             <template v-slot:[`item.actions`]="{ item }">
-              <v-icon
-                small
-                class="mr-2"
-                @click="editContact(item)"
-                >
-                mdi-pencil
-              </v-icon>
-                <v-icon
-                small
-                @click="deleteContact(item)"
-                >
-                mdi-delete
-              </v-icon>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon
+                    small
+                    class="mr-2"
+                    @click="lookUpContact(item)"
+                    v-bind="attrs"
+                    v-on="on"
+                    >
+                    mdi-account
+                  </v-icon>
+                </template>
+                <span>Look Up Contact Information</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon
+                    small
+                    class="mr-2"
+                    @click="editContact(item)"
+                    v-bind="attrs"
+                    v-on="on"
+                    >
+                    mdi-pencil
+                  </v-icon>
+                </template>
+                <span>Edit the Contact Information</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon
+                    small
+                    @click="deleteContact(item)"
+                    v-bind="attrs"
+                    v-on="on"
+                    >
+                    mdi-delete
+                  </v-icon>
+                </template>
+                <span>Delete the Contact Information</span>
+              </v-tooltip>
             </template>
           </v-data-table>
         </v-container>
@@ -55,49 +83,65 @@
 
 </style>
 
-<script lang="ts">
-  import { mapGetters } from "vuex";
-  import { Contact } from "@/../lib/classes/contact"
+<script lang='ts'>
+import Vue from 'vue';
+import Component from 'vue-class-component'
+import { Watch } from 'vue-property-decorator'
+import { Contact } from '@/../lib/classes/contact';
+import { mapGetters } from 'vuex';
 
-  export default {
-    name: "ContactsWidget",
-    data: () => ({
-      contacts: [],
-      selected: [],
-      search: "",
-      singleSelect: true,
-      headers: [
-        {
-          text: "Profile Image",
-          align: "start",
-          sortable: false,
-          value: "name",
-        },
-        { text: "First Name", value: "firstName" },
-        { text: "Last Name", value: "lastName" },
-        { text: "Email", value: "email" },
-        { text: "Phone", value: "phone" },
-        {
-          text: "Actions",
-          sortable: false,
-          value: "actions"
-        },
-      ]
-    }),
-    methods: {
-      editContact(contact: Contact) {
-        this.$store.commit("ContactModule/updateSelectedContact", contact)
-        console.log(this.getSelectedContact);
-      },
-      deleteContact(contact: Contact) {
-        console.log("delete contact:",contact)
-      },
+@Component({
+  computed: { ...mapGetters('ContactStore',{
+    getContacts: 'getContacts', 
+    getSelectedContact: 'getSelectedContact'}) }
+})
+export default class ContactsWidget extends Vue {
+  contacts: Contact[] = [];
+  getContacts: any;
+  selected: Contact[] = [];
+  getSelectedContact: any;
+  search = '';
+  singleSelect = true;
+  headers: Array<any> = [
+    {
+      text: "Profile Image",
+      align: "start",
+      sortable: false,
+      value: "name",
     },
-    computed: {
-      ...mapGetters("ContactModule", ["getContacts", "getSelectedContact"])
+    { text: "First Name", value: "firstName" },
+    { text: "Last Name", value: "lastName" },
+    { text: "Email", value: "email" },
+    { text: "Phone", value: "phone" },
+    {
+      text: "Actions",
+      sortable: false,
+      value: "actions"
     },
-    created() {      
-      this.$data.contacts = this.getContacts;
-    }
+  ];
+    
+  editContact(contact: Contact) {
+    this.$store.commit('ContactStore/updateLookUp', false);
+    this.$store.commit('ContactStore/updateSelectedContact', contact);
   }
+
+  lookUpContact(contact: Contact) {
+    this.$store.commit('ContactStore/updateLookUp', true);
+    this.$store.commit('ContactStore/updateSelectedContact', contact);
+  }
+
+  deleteContact(contact: Contact) {
+    console.log("delete contact:",contact)
+  }
+
+  @Watch('$store.state.ContactStore.contacts')
+  onSelectedContactChanged(value: Contact[], oldValue: Contact[]) {
+    this.contacts = value;
+    this.$forceUpdate();
+  }
+
+  created() {      
+    this.contacts = this.getContacts;
+  }
+}
 </script>
