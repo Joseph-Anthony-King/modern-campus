@@ -30,6 +30,14 @@ export default class ContactStore extends VuexModule {
     this.contacts = [];
   }
   @Mutation
+  removeContact(id: string): void {
+    const index = this.contacts.map(c => {return c.id}).indexOf(id);
+
+    if (index !== -1) {
+      this.contacts.splice(index, 1);
+    }
+  }
+  @Mutation
   replaceContact(contact: Contact): void {
     const index = this.contacts.map(c => {return c.id}).indexOf(contact.id);
 

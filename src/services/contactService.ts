@@ -63,7 +63,30 @@ async function updateContact(data: Contact): Promise<any> {
   }  
 }
 
+async function deleteContact(id: string): Promise<any> {
+
+  try {
+
+    const response = await ContactRepository.deleteContact(id);
+  
+    return {
+      isSuccess: true,
+      status: response.status,
+    };    
+  } catch (error) {
+    if (axios.isAxiosError(error)) {  
+      return {
+        isSuccess: false,
+        status: error.code,
+      };
+    } else {
+      throw new Error();
+    }   
+  } 
+}
+
 export const contactService = {
   getContacts,
-  updateContact
+  updateContact,
+  deleteContact,
 }

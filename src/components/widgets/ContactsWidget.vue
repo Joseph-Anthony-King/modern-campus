@@ -87,8 +87,9 @@
 import Vue from 'vue';
 import Component from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
-import { Contact } from '@/../lib/classes/contact';
 import { mapGetters } from 'vuex';
+import { Contact } from '@/../lib/classes/contact';
+import { deleteContactHelper } from '@/helpers/contacts/contactHelper'
 
 @Component({
   computed: { ...mapGetters('ContactStore',{
@@ -130,8 +131,11 @@ export default class ContactsWidget extends Vue {
     this.$store.commit('ContactStore/updateSelectedContact', contact);
   }
 
-  deleteContact(contact: Contact) {
-    console.log("delete contact:",contact)
+  async deleteContact(contact: Contact) {
+    const result = await deleteContactHelper(
+      contact.id,
+      contact.fullName, 
+      this);
   }
 
   @Watch('$store.state.ContactStore.contacts')

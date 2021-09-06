@@ -89,6 +89,21 @@
         </template>
         <span>Update the Contact</span>
       </v-tooltip>
+      <v-tooltip bottom v-if='!lookUp && contact.id !== ""'>
+        <template v-slot:activator='{ on, attrs }'>
+          <v-btn
+            class='button-full'
+            color='red darken-1'
+            text
+            @click='deleteContact'
+            v-bind='attrs'
+            v-on='on'
+          >
+            Delete
+          </v-btn>
+        </template>
+        <span>Delete the Contact</span>
+      </v-tooltip>
       <v-tooltip bottom>
         <template v-slot:activator='{ on, attrs }'>
           <v-btn
@@ -117,11 +132,12 @@ import { mapGetters } from 'vuex';
 import Store from '@/store/index';
 import { Contact } from '@/../lib/classes/contact';
 import { contactService } from '@/services/contactService';
+import { deleteContactHelper } from '@/helpers/contacts/contactHelper'
 import { 
   ToastMethods, 
   showToast,
   actionToastOptions,
-  defaultToastOptions } from '@/helpers/vue-toasted/toastHelper'
+  defaultToastOptions } from '@/helpers/vue-toasted/toastHelper';
 
 @Component({
   computed: { ...mapGetters('ContactStore',{
@@ -205,6 +221,19 @@ export default class ContactForm extends Vue {
         'Do you want to submit this contact for an update?',
         actionToastOptions(action, null)
       );
+    }
+  }
+
+  async deleteContact(): Promise<void> {
+    if (this.contactFormIsValid && this.contact !== null) {
+      const result = await deleteContactHelper(
+        this.contact.id,
+        this.contact.fullName, 
+        this);
+        
+      if (result) {
+        this.closeContactForm();
+      }
     }
   }
 

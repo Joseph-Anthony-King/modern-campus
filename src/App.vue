@@ -23,10 +23,6 @@ import { Contact } from '@/../lib/classes/contact';
 
 @Component({
   components: { AppBar, ContactForm },
-  computed: { ...mapGetters('ApiStore', {
-    getApiUrl: 'getApiUrl', 
-    getApiKey: 'getApiKey'})
-  }
 })
 export default class App extends Vue {
   editContact = false
@@ -41,12 +37,9 @@ export default class App extends Vue {
   onSelectContactChanged(value: null | Contact, oldVlaue: null | Contact) {
     if (value !== null){
       this.$data.editContact = true;
+    } else {
+      this.$data.editContact = false;
     }
-  }
-  
-  created() {
-    Store.commit('ApiStore/updateApiUrl', process.env.VUE_APP_API_URL);
-    Store.commit('ApiStore/updateApiKey', process.env.VUE_APP_API_KEY);
   }
 }
 </script>
