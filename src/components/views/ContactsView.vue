@@ -14,11 +14,11 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue'
-import Component from 'vue-class-component'
+import Vue from 'vue';
+import Component from 'vue-class-component';
 import Store from '@/store/index';
-import { contactService } from '@/services/contactService'
-import ContactsWidget from '@/components/widgets/ContactsWidget.vue'
+import { contactService } from '@/services/contactService';
+import ContactsWidget from '@/components/widgets/ContactsWidget.vue';
 
 @Component({
   components: { ContactsWidget }

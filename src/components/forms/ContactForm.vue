@@ -1,88 +1,103 @@
 <template>
-  <v-card v-if="contact !== null">
+  <v-card v-if='contact !== null'>
     <v-card-title>
-      <span class="headline">{{ widgetTitle }}</span>
+      <span class='headline'>{{ widgetTitle }}</span>
     </v-card-title>
-    <v-form v-model="contactFormIsValid" ref="contactForm">
+    <v-form v-model='contactFormIsValid' ref='contactForm'>
       <v-card-text>
         <v-container>
-          <v-row cols="12">
+          <v-row cols='12'>
             <v-text-field
-              label="First Name"
-              v-model="contact.firstName"
+              label='First Name'
+              v-model='contact.firstName'
               required
-              :readonly="lookUp"></v-text-field>
+              :readonly='lookUp'></v-text-field>
           </v-row>
-          <v-row cols="12">
+          <v-row cols='12'>
             <v-text-field
-              label="Last Name"
-              v-model="contact.lastName"
+              label='Last Name'
+              v-model='contact.lastName'
               required
-              :readonly="lookUp"></v-text-field>
+              :readonly='lookUp'></v-text-field>
           </v-row>
-          <v-row cols="12">
+          <v-row cols='12'>
             <v-text-field
-              label="Address"
-              v-model="contact.address"
+              label='Address'
+              v-model='contact.address'
               required
-              :readonly="lookUp"></v-text-field>            
+              :readonly='lookUp'></v-text-field>            
           </v-row>
-          <v-row cols="12">
+          <v-row cols='12'>
             <v-text-field
-              label="Address 2"
-              v-model="contact.address2"
+              label='Address 2'
+              v-model='contact.address2'
               required
-              :readonly="lookUp"></v-text-field>            
+              :readonly='lookUp'></v-text-field>            
           </v-row>
-          <v-row cols="12">
+          <v-row cols='12'>
             <v-text-field
-              label="City"
-              v-model="contact.city"
+              label='City'
+              v-model='contact.city'
               required
-              :readonly="lookUp"></v-text-field>            
+              :readonly='lookUp'></v-text-field>            
           </v-row>
-          <v-row cols="12">
+          <v-row cols='12'>
             <v-text-field
-              label="State"
-              v-model="contact.state"
+              label='State'
+              v-model='contact.state'
               required
-              :readonly="lookUp"></v-text-field>            
+              :readonly='lookUp'></v-text-field>            
           </v-row>
-          <v-row cols="12">
+          <v-row cols='12'>
             <v-text-field
-              label="Zip Code"
-              v-model="contact.zipcode"
+              label='Zip Code'
+              v-model='contact.zipcode'
               required
-              :readonly="lookUp"></v-text-field>            
+              :readonly='lookUp'></v-text-field>            
           </v-row>
-          <v-row cols="12">
+          <v-row cols='12'>
             <v-text-field
-              label="Email"
-              v-model="contact.email"
+              label='Email'
+              v-model='contact.email'
               required
-              :readonly="lookUp"></v-text-field>            
+              :readonly='lookUp'></v-text-field>            
           </v-row>
-          <v-row cols="12">
+          <v-row cols='12'>
             <v-text-field
-              label="Phone"
-              v-model="displayPhone"
+              label='Phone'
+              v-model='displayPhone'
               required
-              :readonly="lookUp"></v-text-field>            
+              :readonly='lookUp'></v-text-field>            
           </v-row>
         </v-container>
       </v-card-text>
     </v-form>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
+      <v-tooltip bottom v-if='!lookUp && contact.id !== ""'>
+        <template v-slot:activator='{ on, attrs }'>
           <v-btn
-            class="button-full"
-            color="blue darken-1"
+            class='button-full'
+            color='blue darken-1'
             text
-            @click="closeContactForm"
-            v-bind="attrs"
-            v-on="on"
+            @click='updateContact'
+            v-bind='attrs'
+            v-on='on'
+          >
+            Update
+          </v-btn>
+        </template>
+        <span>Update the Contact</span>
+      </v-tooltip>
+      <v-tooltip bottom>
+        <template v-slot:activator='{ on, attrs }'>
+          <v-btn
+            class='button-full'
+            color='blue darken-1'
+            text
+            @click='closeContactForm'
+            v-bind='attrs'
+            v-on='on'
           >
             Close
           </v-btn>
@@ -93,12 +108,20 @@
   </v-card>
 </template>
 
-<script lang="ts">
+<script lang='ts'>
+/* eslint-disable no-unused-vars */
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
 import { mapGetters } from 'vuex';
+import Store from '@/store/index';
 import { Contact } from '@/../lib/classes/contact';
+import { contactService } from '@/services/contactService';
+import { 
+  ToastMethods, 
+  showToast,
+  actionToastOptions,
+  defaultToastOptions } from '@/helpers/vue-toasted/toastHelper'
 
 @Component({
   computed: { ...mapGetters('ContactStore',{
@@ -112,7 +135,80 @@ export default class ContactForm extends Vue {
   getLookUp: any;
   contactFormIsValid = true;
 
-  closeContactForm() {
+  updateContact(): void {
+    if (this.contactFormIsValid) {
+      const action = [
+        {
+          text: 'Yes',
+          onClick: async (e, toastObject) => {
+            toastObject.goAway(0);
+
+            try {
+              if (this.contact !== null) {
+                let filteredPhoneNumber = '';
+
+                this.contact.rawPhone.split('').forEach(char => {
+                  if (char !== ' ' && !isNaN(Number(char))) {
+                    filteredPhoneNumber += char;
+                  }              
+                });
+
+                this.contact.rawPhone = filteredPhoneNumber;
+                
+                var response: any = await contactService.updateContact(this.contact);
+
+                this.contact = response.data;
+
+                Store.commit('ContactStore/replaceContact', this.contact);
+
+                showToast(
+                  this,
+                  ToastMethods['success'],
+                  `${response.data.fullName} has been updated`,
+                  defaultToastOptions()
+                );
+
+                this.closeContactForm();
+
+              } else {
+
+                showToast(
+                  this,
+                  ToastMethods['error'],
+                  'Contact is null',
+                  defaultToastOptions()
+                );
+              }
+              
+            } catch (error) {
+
+              showToast(
+                this,
+                ToastMethods['error'],
+                error,
+                defaultToastOptions()
+              );              
+            }
+          },
+        },
+        {
+          text: 'No',
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+          },
+        },
+      ];
+
+      showToast(
+        this,
+        ToastMethods['show'],
+        'Do you want to submit this contact for an update?',
+        actionToastOptions(action, null)
+      );
+    }
+  }
+
+  closeContactForm(): void {
     this.$emit('close-contact-form-event', null, null);
   }
 
@@ -157,7 +253,6 @@ export default class ContactForm extends Vue {
   created() {
     this.contact = this.getSelectedContact;
     this.lookUp = this.getLookUp;
-    console.log(this.$data.contact);
   }
 }
 </script>
