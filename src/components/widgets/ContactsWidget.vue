@@ -25,6 +25,30 @@
                 <v-gravatar :email="item.email" class="gravatar"/>
               </td>
             </template>
+
+            <template v-slot:[`item.email`]="{ item }">
+              <td>
+                <v-icon
+                  small
+                  @click="emailContact(item.email)"
+                  >
+                  mdi-email
+                </v-icon>
+                {{ item.email }}
+              </td>
+            </template>
+            
+            <template v-slot:[`item.phone`]="{ item }">
+              <td>
+                <v-icon
+                  small
+                  @click="phoneContact(item.rawPhone)"
+                  >
+                  mdi-phone
+                </v-icon>
+                {{ item.phone }}
+              </td>
+            </template>
             
             <template v-slot:[`item.actions`]="{ item }">
               <v-tooltip bottom>
@@ -129,6 +153,14 @@ export default class ContactsWidget extends Vue {
   lookUpContact(contact: Contact) {
     this.$store.commit('ContactStore/updateLookUp', true);
     this.$store.commit('ContactStore/updateSelectedContact', contact);
+  }
+
+  emailContact(email: string) {
+    location.href = `mailto:${email}`;
+  }
+
+  phoneContact(phone: string) {
+    location.href = `tel:${phone}`;
   }
 
   async deleteContact(contact: Contact) {
