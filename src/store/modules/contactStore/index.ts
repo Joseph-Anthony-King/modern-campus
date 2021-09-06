@@ -48,6 +48,12 @@ export default class ContactStore extends VuexModule {
     }
   }
   @Mutation
+  addContact(contact: Contact): void {
+    if (contact !== null) {
+      this.contacts.push(contact);
+    }
+  }
+  @Mutation
   updateLookUp(lookUp: boolean): void {
     this.lookingUp = lookUp;
   }

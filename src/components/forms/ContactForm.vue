@@ -74,6 +74,21 @@
     </v-form>
     <v-card-actions>
       <v-spacer></v-spacer>
+      <v-tooltip bottom v-if='!lookUp && contact.id === ""'>
+        <template v-slot:activator='{ on, attrs }'>
+          <v-btn
+            class='button-full'
+            color='blue darken-1'
+            text
+            @click='addContact'
+            v-bind='attrs'
+            v-on='on'
+          >
+            Add
+          </v-btn>
+        </template>
+        <span>Add the Contact</span>
+      </v-tooltip>
       <v-tooltip bottom v-if='!lookUp && contact.id !== ""'>
         <template v-slot:activator='{ on, attrs }'>
           <v-btn
@@ -151,7 +166,86 @@ export default class ContactForm extends Vue {
   getLookUp: any;
   contactFormIsValid = true;
 
-  updateContact(): void {
+  async addContact(): Promise<any> {
+    console.log(this.contact);
+    if (this.contactFormIsValid) {
+      const action = [
+        {
+          text: 'Yes',
+          onClick: async (e, toastObject) => {
+            toastObject.goAway(0);
+
+            try {
+              if (this.contact !== null) {
+                let filteredPhoneNumber = '';
+
+                this.contact.rawPhone.split('').forEach(char => {
+                  if (char !== ' ' && !isNaN(Number(char))) {
+                    filteredPhoneNumber += char;
+                  }              
+                });
+
+                this.contact.rawPhone = filteredPhoneNumber;
+
+                console.log("filteredPhoneNumber:",filteredPhoneNumber);
+                console.log("this.contact.rawPhone:",this.contact.rawPhone);
+
+                console.log("new contact:",this.contact);
+                
+                var response: any = await contactService.createContact(this.contact);
+
+                this.contact = response.data;
+
+                Store.commit('ContactStore/addContact', this.contact);
+
+                showToast(
+                  this,
+                  ToastMethods['success'],
+                  `${response.data.fullName} has been added`,
+                  defaultToastOptions()
+                );
+
+                this.closeContactForm();
+
+              } else {
+
+                showToast(
+                  this,
+                  ToastMethods['error'],
+                  'Contact is null',
+                  defaultToastOptions()
+                );
+              }
+              
+            } catch (error) {
+
+              showToast(
+                this,
+                ToastMethods['error'],
+                error,
+                defaultToastOptions()
+              );              
+            }
+          },
+        },
+        {
+          text: 'No',
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+          },
+        },
+      ];
+
+      showToast(
+        this,
+        ToastMethods['show'],
+        `Do you want to create this contact for ${this.contact?.fullName}?`,
+        actionToastOptions(action, null)
+      );
+    }
+  }
+
+  async updateContact(): Promise<any> {
     if (this.contactFormIsValid) {
       const action = [
         {
@@ -244,6 +338,8 @@ export default class ContactForm extends Vue {
   get widgetTitle(): string {
     if (!this.lookUp && this.contact !== null && this.contact.id !== '') {
       return 'Edit Contact';
+    } else if (!this.lookUp && this.contact !== null && this.contact.id === '') {
+      return 'New Contact';
     } else {
       return 'Contact Information'
     }
@@ -251,7 +347,9 @@ export default class ContactForm extends Vue {
 
   get displayPhone(): string {
     if (!this.lookUp && this.contact !== null && this.contact.id !== '') {
-      return this.contact.rawPhone
+      return this.contact.rawPhone;
+    } else if (!this.lookUp && this.contact !== null && this.contact.id === '') {
+      return this.contact.rawPhone;
     } else {
       if (this.contact !== null) {
         return this.contact.phone;
@@ -263,7 +361,15 @@ export default class ContactForm extends Vue {
 
   set displayPhone(value: string) {
     if (!this.lookUp && this.contact !== null && this.contact.id !== '') {
-      this.contact.rawPhone = value
+      this.contact.rawPhone = value;
+    } else if (!this.lookUp && this.contact !== null && this.contact.id === '') {
+      this.contact.rawPhone = value;
+    } else {
+      if (this.contact !== null) {
+        this.contact.phone = value;
+      } else {
+        console.log("contact is null:", value);
+      }
     }
   }
 

@@ -37,7 +37,6 @@ const getContacts = async function (): Promise<any> {
         "Accept":"*/*"
       }
     });
-    console.log('getContacts response:', response);
     return response;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -62,7 +61,7 @@ const createContact = async function (data: Contact): Promise<any> {
         'apikey': apikey,
         'firstName': data.firstName,
         'lastName': data.lastName,
-        'phone': data.phone,
+        'phone': data.rawPhone,
         'email': data.email,
         'address': data.address,
         'address2': data.address2,

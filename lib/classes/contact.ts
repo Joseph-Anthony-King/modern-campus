@@ -98,7 +98,7 @@ export class Contact implements IContact {
   }
 
   constructor(data?: any) {
-    if (data !== null) {
+    if (data !== undefined) {
       this.id = data.id !== undefined ? data.id : '';
       this.firstName = data.firstName !== undefined ? data.firstName : '';
       this.lastName = data.lastName !== undefined ? data.lastName : '';

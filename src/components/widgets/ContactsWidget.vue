@@ -63,7 +63,7 @@
                     mdi-account
                   </v-icon>
                 </template>
-                <span>Look Up Contact Information</span>
+                <span>Look Up {{ item.fullName }}</span>
               </v-tooltip>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
@@ -77,7 +77,7 @@
                     mdi-pencil
                   </v-icon>
                 </template>
-                <span>Edit the Contact Information</span>
+                <span>Edit {{ item.fullName }}</span>
               </v-tooltip>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
@@ -90,12 +90,51 @@
                     mdi-delete
                   </v-icon>
                 </template>
-                <span>Delete the Contact Information</span>
+                <span>Delete {{ item.fullName }}</span>
               </v-tooltip>
             </template>
           </v-data-table>
         </v-container>
       </v-card-text>
+      <hr />
+      <v-card-title class="justify-center">Available Actions</v-card-title>
+      <v-card-actions>
+        <v-col class="text-center">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                class="button-full"
+                color="blue darken-1"
+                text
+                @click="addContact"
+                v-bind="attrs"
+                v-on="on"
+              >
+                Add Contact
+              </v-btn>
+            </template>
+            <span>Add a New Contact</span>
+          </v-tooltip>
+        </v-col>
+        <v-col class="text-center">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                class="button-full"
+                color="red darken-1"
+                text
+                @click="deleteSelected"
+                v-bind="attrs"
+                v-on="on"
+                :disabled="selected.length === 0"
+              >
+                Delete Selected
+              </v-btn>
+            </template>
+            <span>Delete Selected Contacts</span>
+          </v-tooltip>          
+        </v-col>
+      </v-card-actions>
     </v-card>
   </div>  
 </template>
@@ -144,6 +183,12 @@ export default class ContactsWidget extends Vue {
       value: "actions"
     },
   ];
+
+  addContact() {
+    const contact = new Contact();
+    this.$store.commit('ContactStore/updateLookUp', false);
+    this.$store.commit('ContactStore/updateSelectedContact', contact);
+  }
     
   editContact(contact: Contact) {
     this.$store.commit('ContactStore/updateLookUp', false);
@@ -153,6 +198,13 @@ export default class ContactsWidget extends Vue {
   lookUpContact(contact: Contact) {
     this.$store.commit('ContactStore/updateLookUp', true);
     this.$store.commit('ContactStore/updateSelectedContact', contact);
+  }
+
+  deleteSelected(){
+    console.log("Following Contacts will be deleted:")
+    this.selected.forEach(contact => {
+      console.log(contact.fullName);
+    });
   }
 
   emailContact(email: string) {

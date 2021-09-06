@@ -1,6 +1,29 @@
 import axios from 'axios';
-import { ContactRepository } from '@/../lib/repositories/contactRepository/index'
-import { Contact } from '@/../lib/classes/contact'
+import { ContactRepository } from '@/../lib/repositories/contactRepository/index';
+import { Contact } from '@/../lib/classes/contact';
+
+async function createContact(data: Contact): Promise<any> {
+
+  try {
+
+    const response = await ContactRepository.createContact(data);
+  
+    return {
+      isSuccess: true,
+      status: response.status,
+      data: new Contact(response.data)
+    };
+  } catch (error) {
+    if (axios.isAxiosError(error)) {  
+      return {
+        isSuccess: false,
+        status: error.code,
+      };
+    } else {
+      throw new Error();
+    }
+  }
+}
 
 async function getContacts(): Promise<any> {
 
@@ -50,7 +73,7 @@ async function updateContact(data: Contact): Promise<any> {
       isSuccess: true,
       status: response.status,
       data: new Contact(response.data)
-    };    
+    };
   } catch (error) {
     if (axios.isAxiosError(error)) {  
       return {
@@ -59,8 +82,8 @@ async function updateContact(data: Contact): Promise<any> {
       };
     } else {
       throw new Error();
-    }   
-  }  
+    }
+  }
 }
 
 async function deleteContact(id: string): Promise<any> {
@@ -86,6 +109,7 @@ async function deleteContact(id: string): Promise<any> {
 }
 
 export const contactService = {
+  createContact,
   getContacts,
   updateContact,
   deleteContact,
