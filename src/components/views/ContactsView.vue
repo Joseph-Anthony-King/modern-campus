@@ -30,7 +30,3 @@ export default class ContactsView extends Vue{
   }
 }
 </script>
-
-<style>
-
-</style>

@@ -10,55 +10,49 @@
             <v-text-field
               label='First Name'
               v-model='contact.firstName'
-              required
               :readonly='lookUp'></v-text-field>
           </v-row>
           <v-row cols='12'>
             <v-text-field
               label='Last Name'
               v-model='contact.lastName'
-              required
               :readonly='lookUp'></v-text-field>
           </v-row>
           <v-row cols='12'>
             <v-text-field
               label='Address'
               v-model='contact.address'
-              required
               :readonly='lookUp'></v-text-field>            
           </v-row>
           <v-row cols='12'>
             <v-text-field
               label='Address 2'
               v-model='contact.address2'
-              required
               :readonly='lookUp'></v-text-field>            
           </v-row>
           <v-row cols='12'>
             <v-text-field
               label='City'
               v-model='contact.city'
-              required
               :readonly='lookUp'></v-text-field>            
           </v-row>
           <v-row cols='12'>
             <v-text-field
               label='State'
               v-model='contact.state'
-              required
               :readonly='lookUp'></v-text-field>            
           </v-row>
           <v-row cols='12'>
             <v-text-field
               label='Zip Code'
               v-model='contact.zipcode'
-              required
               :readonly='lookUp'></v-text-field>            
           </v-row>
           <v-row cols='12'>
             <v-text-field
               label='Email'
               v-model='contact.email'
+              :rules="emailRules"
               required
               :readonly='lookUp'></v-text-field>            
           </v-row>
@@ -66,6 +60,7 @@
             <v-text-field
               label='Phone'
               v-model='displayPhone'
+              :rules="phoneRules"
               required
               :readonly='lookUp'></v-text-field>            
           </v-row>
@@ -83,6 +78,7 @@
             @click='addContact'
             v-bind='attrs'
             v-on='on'
+            :disabled="!contactFormIsValid"
           >
             Add
           </v-btn>
@@ -157,7 +153,23 @@ import {
 @Component({
   computed: { ...mapGetters('ContactStore',{
     getSelectedContact: 'getSelectedContact', 
-    getLookUp: 'getLookUp'}) }
+    getLookUp: 'getLookUp'}),
+
+    emailRules() {
+      const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return [
+        (v: string) => !!v || "Email is required",
+        (v: string) => !v || regex.test(v) || "Email must be valid"
+      ];
+    },
+    phoneRules() {
+      const regex = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+      return [
+        (v: string) => !!v || "Phone is required",
+        (v: string) => !v || regex.test(v) || "Phone must be valid"
+      ];
+    }
+  }
 })
 export default class ContactForm extends Vue {
   contact: null | Contact = null;
@@ -165,9 +177,9 @@ export default class ContactForm extends Vue {
   lookUp = false;
   getLookUp: any;
   contactFormIsValid = true;
+  dirty = false;
 
   async addContact(): Promise<any> {
-    console.log(this.contact);
     if (this.contactFormIsValid) {
       const action = [
         {
@@ -186,11 +198,6 @@ export default class ContactForm extends Vue {
                 });
 
                 this.contact.rawPhone = filteredPhoneNumber;
-
-                console.log("filteredPhoneNumber:",filteredPhoneNumber);
-                console.log("this.contact.rawPhone:",this.contact.rawPhone);
-
-                console.log("new contact:",this.contact);
                 
                 var response: any = await contactService.createContact(this.contact);
 
@@ -329,7 +336,7 @@ export default class ContactForm extends Vue {
         this.closeContactForm();
       }
     }
-  }
+  }  
 
   closeContactForm(): void {
     this.$emit('close-contact-form-event', null, null);
@@ -391,7 +398,3 @@ export default class ContactForm extends Vue {
   }
 }
 </script>
-
-<style>
-
-</style>
