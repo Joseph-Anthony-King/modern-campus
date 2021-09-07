@@ -10,36 +10,48 @@
             <v-text-field
               label='First Name'
               v-model='contact.firstName'
+              @click="!dirty ? (dirty = true) : null"
+              @focus="!dirty ? (dirty = true) : null"
               :readonly='lookUp'></v-text-field>
           </v-row>
           <v-row cols='12'>
             <v-text-field
               label='Last Name'
               v-model='contact.lastName'
+              @click="!dirty ? (dirty = true) : null"
+              @focus="!dirty ? (dirty = true) : null"
               :readonly='lookUp'></v-text-field>
           </v-row>
           <v-row cols='12'>
             <v-text-field
               label='Address'
               v-model='contact.address'
+              @click="!dirty ? (dirty = true) : null"
+              @focus="!dirty ? (dirty = true) : null"
               :readonly='lookUp'></v-text-field>            
           </v-row>
           <v-row cols='12'>
             <v-text-field
               label='Address 2'
               v-model='contact.address2'
+              @click="!dirty ? (dirty = true) : null"
+              @focus="!dirty ? (dirty = true) : null"
               :readonly='lookUp'></v-text-field>            
           </v-row>
           <v-row cols='12'>
             <v-text-field
               label='City'
               v-model='contact.city'
+              @click="!dirty ? (dirty = true) : null"
+              @focus="!dirty ? (dirty = true) : null"
               :readonly='lookUp'></v-text-field>            
           </v-row>
           <v-row cols='12'>
             <v-select
               label='State'
               v-model="contact.state"
+              @click="!dirty ? (dirty = true) : null"
+              @focus="!dirty ? (dirty = true) : null"
               :items='states'
               item-text='label'
               item-value='value'
@@ -50,32 +62,39 @@
             <v-text-field
               label='Zip Code'
               v-model='contact.zipcode'
+              @click="!dirty ? (dirty = true) : null"
+              @focus="!dirty ? (dirty = true) : null"
+              :rules="zipcodeRules"
               :readonly='lookUp'></v-text-field>            
           </v-row>
           <v-row cols='12' v-if="lookUp">
             <v-text-field
               label='Email'
               v-model='contact.email'
+              @click="!dirty ? (dirty = true) : null"
+              @focus="!dirty ? (dirty = true) : null"
               :rules="emailRules"
               append-icon="mdi-email"
               @click:append="emailContact(contact.email)"
-              required
               readonly></v-text-field>            
           </v-row>
           <v-row cols='12' v-if="lookUp">
             <v-text-field
               label='Phone'
               v-model='contact.phone'
+              @click="!dirty ? (dirty = true) : null"
+              @focus="!dirty ? (dirty = true) : null"
               :rules="phoneRules"
               append-icon="mdi-phone"
               @click:append="callContact(contact.rawPhone)"
-              required
               readonly></v-text-field>
           </v-row>
           <v-row cols='12' v-if="!lookUp">
             <v-text-field
               label='Email'
               v-model='contact.email'
+              @click="!dirty ? (dirty = true) : null"
+              @focus="!dirty ? (dirty = true) : null"
               :rules="emailRules"
               required></v-text-field>            
           </v-row>
@@ -83,6 +102,8 @@
             <v-text-field
               label='Phone'
               v-model='contact.rawPhone'
+              @click="!dirty ? (dirty = true) : null"
+              @focus="!dirty ? (dirty = true) : null"
               :rules="phoneRules"
               required></v-text-field>   
           </v-row>
@@ -100,7 +121,7 @@
             @click='addContact'
             v-bind='attrs'
             v-on='on'
-            :disabled="!contactFormIsValid"
+            :disabled="!contactFormIsValid && dirty"
           >
             Add
           </v-btn>
@@ -179,17 +200,21 @@ import { Watch } from 'vue-property-decorator';
   computed: { ...mapGetters('ContactStore',{
     getSelectedContact: 'getSelectedContact', 
     getLookUp: 'getLookUp'}),
+    zipcodeRules() {
+      const regex = /^\d{5}(?:[- ]?\d{4})?$/;
+      return [
+        (v: string) => !v || regex.test(v) || "Zip code must be valid"
+      ];
+    },
     emailRules() {
       const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return [
-        (v: string) => !!v || "Email is required",
         (v: string) => !v || regex.test(v) || "Email must be valid"
       ];
     },
     phoneRules() {
       const regex = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
       return [
-        (v: string) => !!v || "Phone is required",
         (v: string) => !v || regex.test(v) || "Phone must be valid"
       ];
     }
@@ -368,23 +393,22 @@ export default class ContactForm extends Vue {
       showToast(
         this,
         ToastMethods['show'],
-        'Do you want to submit this contact for an update?',
+        `Do you want to update ${this.contact?.fullName}?`,
         actionToastOptions(action, null)
       );
     }
   }
   
-  async deleteContact(): Promise<void> {
-    if (this.contactFormIsValid && this.contact !== null) {
-      const result = await deleteContactHelper(
-        this.contact.id,
-        this.contact.fullName, 
-        this);
-        
-      if (result) {
-        this.closeContactForm();
-      }
-    }
+  async deleteContact(): Promise<void> {    
+    if (this.contact !== null) {
+    
+      await deleteContactHelper(
+            this.contact.id,
+            this.contact.fullName, 
+            this); 
+
+    }    
+    this.closeContactForm();
   } 
 
   emailContact(email: string) {
@@ -397,6 +421,7 @@ export default class ContactForm extends Vue {
 
   closeContactForm(): void {
     this.contact = null;
+    console.log("contact:", this.contact)
     this.$emit('close-contact-form-event', null, null);
   }
 
