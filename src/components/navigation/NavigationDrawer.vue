@@ -2,6 +2,7 @@
   <v-navigation-drawer
     app
     color="secondary"
+    :value="navDrawerStatus"
   >
     <v-list>
       <v-list-item>
@@ -41,9 +42,12 @@
 <script lang='ts'>
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import { Prop } from 'vue-property-decorator';
 
 @Component
 export default class NavigationDrawer extends Vue {
+  
+  @Prop(Boolean) navDrawerStatus: boolean | undefined;
 }
 </script>
 

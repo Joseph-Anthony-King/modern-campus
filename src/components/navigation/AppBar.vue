@@ -1,5 +1,9 @@
 <template>  
   <v-app-bar app color="primary" dark>
+    <v-app-bar-nav-icon
+      class="nav-bar-icon-status"
+      @click.stop="updateNavDrawerStatus"
+    ></v-app-bar-nav-icon>
     <div class="d-flex align-center">
       <v-img
         alt="Vuetify Logo"
@@ -31,5 +35,17 @@ import Component from 'vue-class-component';
 
 @Component
 export default class AppBar extends Vue {
+
+  updateNavDrawerStatus() {
+    this.$emit("update-nav-drawer-status", null, null);
+  }
 }
 </script>
+
+<style scoped>
+@media only screen and (min-width: 1367px) {
+  .nav-bar-icon-status {
+    display: none;
+  }
+}
+</style>

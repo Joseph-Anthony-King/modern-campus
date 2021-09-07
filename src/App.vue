@@ -1,7 +1,9 @@
 <template>
   <v-app>
-    <navigation-drawer />
-    <app-bar />
+    <navigation-drawer
+      :navDrawerStatus="navDrawerStatus" />
+    <app-bar
+      v-on:update-nav-drawer-status="updateNavDrawer" />
     <v-main>
       <router-view />
     </v-main>
@@ -26,14 +28,19 @@ import { Contact } from '@/../lib/classes/contact';
   components: { AppBar, ContactForm, NavigationDrawer },
 })
 export default class App extends Vue {
-  editContact = false
+  editContact = false;
+  navDrawerStatus: null | boolean = null;
   
   closeContactForm(): void {
     this.editContact = false;
     Store.commit('ContactStore/updateSelectedContact', null);
     Store.commit('ContactStore/updateLookUp', false);
   }
-  
+
+  updateNavDrawer() {
+    this.navDrawerStatus = this.navDrawerStatus ? false : true;
+  }
+
   @Watch('$store.state.ContactStore.selectedContact')
   onSelectContactChanged(value: null | Contact, oldVlaue: null | Contact) {
     if (value !== null){
