@@ -289,10 +289,6 @@ export default class ContactsWidget extends Vue {
         `Are you sure you want to delete ${pronoun} selected ${contacts}?`,
         actionToastOptions(action, null)
       );
-
-
-
-
   }
 
   emailContact(email: string) {

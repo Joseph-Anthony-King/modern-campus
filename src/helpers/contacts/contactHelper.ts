@@ -5,7 +5,6 @@ import {
   showToast,
   actionToastOptions,
   defaultToastOptions } from '@/helpers/vue-toasted/toastHelper';
-import { Contact } from 'lib/classes/contact';
 
 export async function deleteContactHelper(
   id: string,
@@ -24,6 +23,7 @@ export async function deleteContactHelper(
       text: 'No',
       onClick: (e, toastObject) => {
         toastObject.goAway(0);
+        Store.commit('AppStore/updatingProcessing', false);
         return false;
       },
     },
@@ -50,12 +50,6 @@ export async function deleteContactHelperCore(
 
     if (response.isSuccess) {
       Store.commit('ContactStore/removeContact', id);
-
-      const selectedContact: Contact = Store.getters('ContactStore/getSelectedContact');
-
-      if (selectedContact.id === id) {
-        Store.commit('ContactStore/removeSelectedContact');
-      }
 
       if (fullName !== null) {
         showToast(

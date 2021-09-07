@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if='contact !== null'>
+  <v-card v-if='contact !== null && !processing'>
     <v-card-title>
       <span class='headline'>{{ widgetTitle }}</span>
     </v-card-title>
@@ -160,9 +160,8 @@
 /* eslint-disable no-unused-vars */
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Watch } from 'vue-property-decorator';
-import { mapGetters } from 'vuex';
 import Store from '@/store/index';
+import { mapGetters } from 'vuex';
 import { Contact } from '@/../lib/classes/contact';
 import { contactService } from '@/services/contactService';
 import { 
@@ -174,12 +173,12 @@ import {
   showToast,
   actionToastOptions,
   defaultToastOptions } from '@/helpers/vue-toasted/toastHelper';
+import { Watch } from 'vue-property-decorator';
 
 @Component({
   computed: { ...mapGetters('ContactStore',{
-      contact: 'getSelectedContact', 
-      lookUp: 'getLookUp'}),
-
+    getSelectedContact: 'getSelectedContact', 
+    getLookUp: 'getLookUp'}),
     emailRules() {
       const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return [
@@ -198,9 +197,12 @@ import {
 })
 export default class ContactForm extends Vue {
   contact: null | Contact = null;
+  getSelectedContact: any;
   lookUp = false;
+  getLookUp: any;
   contactFormIsValid = true;
   dirty = false;
+  processing = false;
   states: Array<string> = [
     'AL', 'AK', 'AZ', 'AR', 'CA',
     'CO', 'CT', 'DE', 'FL', 'GA',
@@ -224,6 +226,9 @@ export default class ContactForm extends Vue {
 
             try {
               if (this.contact !== null) {
+                this.processing = true;
+                Store.commit('AppStore/updatingProcessing', this.processing);
+
                 let filteredPhoneNumber = '';
 
                 this.contact.rawPhone.split('').forEach(char => {
@@ -267,6 +272,9 @@ export default class ContactForm extends Vue {
                 error,
                 defaultToastOptions()
               );              
+            } finally {
+              this.processing = false;
+              Store.commit('AppStore/updatingProcessing', this.processing);
             }
           },
         },
@@ -297,6 +305,9 @@ export default class ContactForm extends Vue {
 
             try {
               if (this.contact !== null) {
+                this.processing = true;
+                Store.commit('AppStore/updatingProcessing', this.processing);
+
                 let filteredPhoneNumber = '';
 
                 this.contact.rawPhone.split('').forEach(char => {
@@ -340,6 +351,9 @@ export default class ContactForm extends Vue {
                 error,
                 defaultToastOptions()
               );              
+            } finally {
+              this.processing = false;
+              Store.commit('AppStore/updatingProcessing', this.processing);
             }
           },
         },
@@ -359,7 +373,7 @@ export default class ContactForm extends Vue {
       );
     }
   }
-
+  
   async deleteContact(): Promise<void> {
     if (this.contactFormIsValid && this.contact !== null) {
       const result = await deleteContactHelper(
@@ -382,6 +396,7 @@ export default class ContactForm extends Vue {
   }
 
   closeContactForm(): void {
+    this.contact = null;
     this.$emit('close-contact-form-event', null, null);
   }
 
@@ -395,32 +410,19 @@ export default class ContactForm extends Vue {
     }
   }
 
-  get displayPhone(): string {
-    if (!this.lookUp && this.contact !== null && this.contact.id !== '') {
-      return this.contact.rawPhone;
-    } else if (!this.lookUp && this.contact !== null && this.contact.id === '') {
-      return this.contact.rawPhone;
-    } else {
-      if (this.contact !== null) {
-        return this.contact.phone;
-      } else {
-        return '';
-      }
-    }
+  @Watch('$store.state.ContactStore.selectedContact')
+  onSelectContactChanged(value: null | Contact, oldVlaue: null | Contact) {
+    this.contact = value;
   }
 
-  set displayPhone(value: string) {
-    if (!this.lookUp && this.contact !== null && this.contact.id !== '') {
-      this.contact.rawPhone = value;
-    } else if (!this.lookUp && this.contact !== null && this.contact.id === '') {
-      this.contact.rawPhone = value;
-    } else {
-      if (this.contact !== null) {
-        this.contact.phone = value;
-      } else {
-        console.log("contact is null:", value);
-      }
-    }
+  @Watch('$store.state.ContactStore.lookingUp')
+  onLookUpChanged(value: boolean, oldVlaue: boolean) {
+    this.lookUp = value;
+  }
+
+  created() {
+    this.contact = this.getSelectedContact
+    this.lookUp = this.getLookUp;
   }
 }
 </script>
