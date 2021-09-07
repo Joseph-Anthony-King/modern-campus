@@ -37,7 +37,7 @@
           and can also be downloaded as a docker file using the following tag: <b>josephkingca/modern-campus:1.0</b>.
         </p>
         <p class="subheading font-weight-regular">
-          This app has also been deployed to Heroku and can be review at the following 
+          This app has also been deployed to Heroku and can be reviewed at the following 
           <a href='https://pacific-depths-84179.herokuapp.com/' target='_blank' class='home-link'>link</a>.
         </p>
       </v-col>
