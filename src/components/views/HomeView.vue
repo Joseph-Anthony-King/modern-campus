@@ -12,9 +12,12 @@
 
       <v-col class="mb-4">
         <h1 class="display-2 font-weight-bold mb-3">
-          Welcome to Vuetify
+          Welcome to Modern Campus:
         </h1>
 
+        <h2 class="display-2 mb-3">
+          Blue Book
+        </h2>
         <p class="subheading font-weight-regular">
           For help and collaboration with other Vuetify developers,
           <br>please join our online
