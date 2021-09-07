@@ -179,9 +179,9 @@ import {
 })
 export default class ContactsWidget extends Vue {
   contacts: Contact[] = [];
-  getContacts: any;
   selected: Contact[] = [];
   getSelectedContact: any;
+  getContacts: any;
   search = '';
   singleSelect = true;
   headers: Array<any> = [
@@ -316,6 +316,13 @@ export default class ContactsWidget extends Vue {
     this.$forceUpdate();
   }
 
+  @Watch("contacts")
+  onContactsChanged(value: Contact[], oldValue: Contact[]){
+    if (value.length > 0) {
+      Store.commit('AppStore/updatingProcessing', false);
+    }
+  }
+
   @Watch('selectedFilter')
   onSelectedFilterChanged(value: any, oldValue: any) {
     if (value === 0) {
@@ -339,8 +346,7 @@ export default class ContactsWidget extends Vue {
 
   created() {
     Store.commit('AppStore/updatingProcessing', true);
-    this.contacts = this.getContacts;
-    Store.commit('AppStore/updatingProcessing', false);
+    this.contacts = this.getContacts;    
   }
 }
 </script>

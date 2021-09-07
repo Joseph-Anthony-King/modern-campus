@@ -177,8 +177,8 @@ import {
 
 @Component({
   computed: { ...mapGetters('ContactStore',{
-    getSelectedContact: 'getSelectedContact', 
-    getLookUp: 'getLookUp'}),
+      contact: 'getSelectedContact', 
+      lookUp: 'getLookUp'}),
 
     emailRules() {
       const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -198,9 +198,7 @@ import {
 })
 export default class ContactForm extends Vue {
   contact: null | Contact = null;
-  getSelectedContact: any;
   lookUp = false;
-  getLookUp: any;
   contactFormIsValid = true;
   dirty = false;
   states: Array<string> = [
@@ -423,23 +421,6 @@ export default class ContactForm extends Vue {
         console.log("contact is null:", value);
       }
     }
-  }
-
-  @Watch('$store.state.ContactStore.selectedContact')
-  onSelectedContactChanged(value: Contact | null, oldValue: Contact | null) {
-    this.contact = value;
-    this.$forceUpdate();
-  }
-
-  @Watch('$store.state.ContactStore.lookingUp')
-  onLookingUpChanged(value: boolean, oldValue: boolean) {
-    this.lookUp = value;
-    this.$forceUpdate();
-  }
-
-  created() {
-    this.contact = this.getSelectedContact;
-    this.lookUp = this.getLookUp;
   }
 }
 </script>

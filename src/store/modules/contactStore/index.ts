@@ -1,6 +1,6 @@
 import { VuexModule, Module, Mutation } from 'vuex-module-decorators';
-import { Contact } from '@/../lib/classes/contact';
 import { ModuleOptions } from 'vuex-module-decorators/dist/types/moduleoptions';
+import { Contact } from '@/../lib/classes/contact';
 
 @Module({ namespaced: true, name: 'contactStore' })
 export default class ContactStore extends VuexModule {

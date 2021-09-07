@@ -28,24 +28,22 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
 import Store from '@/store/index';
-// import { mapGetters } from 'vuex';
 import AppBar from '@/components/navigation/AppBar.vue';
 import NavigationDrawer from '@/components/navigation/NavigationDrawer.vue';
 import ContactForm from '@/components/forms/ContactForm.vue'
 import { Contact } from '@/../lib/classes/contact';
 
 @Component({
-  components: { AppBar, ContactForm, NavigationDrawer },
-  // computed: { ...mapGetters('AppStore',{
-  //   getProcessing: 'getProcessing'}) }
+  components: { AppBar, ContactForm, NavigationDrawer }
 })
 export default class App extends Vue {
   editContact = false;
   navDrawerStatus: null | boolean = null;
-  getProcessing = false;
+  getProcessing: null | boolean = false;
   
   closeContactForm(): void {
     this.editContact = false;
+    this.getProcessing = false;
     Store.commit('ContactStore/updateSelectedContact', null);
     Store.commit('ContactStore/updateLookUp', false);
   }
@@ -64,7 +62,7 @@ export default class App extends Vue {
   }
 
   @Watch('$store.state.AppStore.processing')
-  onProcessingChanged(value: boolean) {
+  onProcessingChanged(value: boolean | null) {
     this.getProcessing = value;
   }
 }

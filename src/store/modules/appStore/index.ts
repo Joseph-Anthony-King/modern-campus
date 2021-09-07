@@ -11,8 +11,7 @@ export default class AppStore extends VuexModule {
   @Mutation
   updatingProcessing(processing: boolean): void {
     this.processing = processing;
-  }
-  
+  }  
   get getProcessing(): boolean {
     return this.processing;
   }
