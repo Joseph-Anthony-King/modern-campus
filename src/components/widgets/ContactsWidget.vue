@@ -188,11 +188,12 @@ export default class ContactsWidget extends Vue {
     {
       text: "Profile Image",
       align: "start",
+      filterable: true, 
       sortable: false,
       value: "name",
     },
     { 
-      text: "First Name", 
+      text: "First Name",
       filterable: true, 
       value: "firstName" },
     { 
@@ -204,11 +205,13 @@ export default class ContactsWidget extends Vue {
       filterable: true, 
       value: "email" },
     { 
-      text: "Phone", 
-      filterable: false, 
+      text: "Phone",
+      filterable: false,
+      sortable: false,
       value: "phone" },
     {
       text: "Actions",
+      filterable: false,
       sortable: false,
       value: "actions"
     },
