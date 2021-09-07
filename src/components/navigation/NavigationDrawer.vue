@@ -3,6 +3,7 @@
     app
     color="secondary"
     :value="navDrawerStatus"
+    mobile-breakpoint="1367"
   >
     <v-list>
       <v-list-item>
