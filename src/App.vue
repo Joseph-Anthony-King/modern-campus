@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <navigation-drawer />
     <app-bar />
     <v-main>
       <router-view />
@@ -15,14 +16,14 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
-import { mapGetters } from 'vuex';
 import Store from '@/store/index';
 import AppBar from '@/components/navigation/AppBar.vue';
+import NavigationDrawer from '@/components/navigation/NavigationDrawer.vue';
 import ContactForm from '@/components/forms/ContactForm.vue'
 import { Contact } from '@/../lib/classes/contact';
 
 @Component({
-  components: { AppBar, ContactForm },
+  components: { AppBar, ContactForm, NavigationDrawer },
 })
 export default class App extends Vue {
   editContact = false
