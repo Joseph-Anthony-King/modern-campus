@@ -14,12 +14,19 @@
     <app-bar
       v-on:update-nav-drawer-status="updateNavDrawer" />
     <v-main>
-      <router-view />
+      <transition name="fade">
+        <router-view />
+      </transition>
+
+      <v-dialog v-model="editContact" persistent max-width="800px">
+        <contact-form
+          v-on:close-contact-form-event="closeContactForm" />
+      </v-dialog>
     </v-main>
-    <v-dialog v-model="editContact" persistent max-width="800px">
-      <contact-form
-        v-on:close-contact-form-event="closeContactForm" />
-    </v-dialog>
+
+    <v-footer app>
+      <Footer />
+    </v-footer>
   </v-app>
 </template>
 
@@ -30,11 +37,16 @@ import { Watch } from 'vue-property-decorator';
 import Store from '@/store/index';
 import AppBar from '@/components/navigation/AppBar.vue';
 import NavigationDrawer from '@/components/navigation/NavigationDrawer.vue';
+import Footer from '@/components/navigation/Footer.vue';
 import ContactForm from '@/components/forms/ContactForm.vue'
 import { Contact } from '@/../lib/classes/contact';
 
 @Component({
-  components: { AppBar, ContactForm, NavigationDrawer }
+  components: { 
+    AppBar,
+    NavigationDrawer,
+    Footer,
+    ContactForm, }
 })
 export default class App extends Vue {
   editContact = false;
