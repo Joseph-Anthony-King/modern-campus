@@ -19,76 +19,23 @@
           Blue Book
         </h2>
         <p class="subheading font-weight-regular">
-          For help and collaboration with other Vuetify developers,
-          <br>please join our online
-          <a
-            href="https://community.vuetifyjs.com"
-            target="_blank"
-          >Discord Community</a>
+          Thank you for your consideration, please see my attached submission for my application with Modern Campus.
         </p>
-      </v-col>
-
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
-        <h2 class="headline font-weight-bold mb-3">
-          What's next?
-        </h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(next, i) in whatsNext"
-            :key="i"
-            :href="next.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ next.text }}
-          </a>
-        </v-row>
-      </v-col>
-
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
-        <h2 class="headline font-weight-bold mb-3">
-          Important Links
-        </h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(link, i) in importantLinks"
-            :key="i"
-            :href="link.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ link.text }}
-          </a>
-        </v-row>
-      </v-col>
-
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
-        <h2 class="headline font-weight-bold mb-3">
-          Ecosystem
-        </h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(eco, i) in ecosystem"
-            :key="i"
-            :href="eco.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ eco.text }}
-          </a>
-        </v-row>
+        <p class="subheading font-weight-regular">
+          This app uses <a href='https://vuejs.org/' target='_blank' class='home-link'>Vue.js</a> and 
+          <a href='https://vuetifyjs.com/en/' target='_blank' class='home-link'>Vuetify</a> to provide 
+          the benefits of using of a ready made <b>Javascript</b> framework for building web and mobile apps.  This app 
+          will work in desktop and mobile views.
+        </p>
+        <p class="subheading font-weight-regular">
+          Additionally, <a href='https://www.typescriptlang.org/' target='_blank' class='home-link'>Typescript</a>
+          was used to provide the benefits of a strongly typed progamming language to assist with coding that still
+          meets the requirement of programming within a subset of <b>Javascript</b>.
+        </p>
+        <p class="subheading font-weight-regular">
+          This code is available on <a href='https://github.com/Joseph-Anthony-King/modern-campus' target='_blank' class='home-link'>GitHub</a>
+          and can also be downloaded as a docker file using the following tag: <b>josephkingca/modern-campus:1.0</b>.
+        </p>
       </v-col>
     </v-row>
   </v-container>
@@ -100,55 +47,14 @@ import Component from 'vue-class-component'
 
 @Component
 export default class HomeView extends Vue {
-  ecosystem: Array<any> = [
-    {
-      text: 'vuetify-loader',
-      href: 'https://github.com/vuetifyjs/vuetify-loader',
-    },
-    {
-      text: 'github',
-      href: 'https://github.com/vuetifyjs/vuetify',
-    },
-    {
-      text: 'awesome-vuetify',
-      href: 'https://github.com/vuetifyjs/awesome-vuetify',
-    },
-  ];
-  importantLinks: Array<any> = [
-    {
-      text: 'Documentation',
-      href: 'https://vuetifyjs.com',
-    },
-    {
-      text: 'Chat',
-      href: 'https://community.vuetifyjs.com',
-    },
-    {
-      text: 'Made with Vuetify',
-      href: 'https://madewithvuejs.com/vuetify',
-    },
-    {
-      text: 'Twitter',
-      href: 'https://twitter.com/vuetifyjs',
-    },
-    {
-      text: 'Articles',
-      href: 'https://medium.com/vuetify',
-    },
-  ];
-  whatsNext: Array<any> = [
-    {
-      text: 'Explore components',
-      href: 'https://vuetifyjs.com/components/api-explorer',
-    },
-    {
-      text: 'Select a layout',
-      href: 'https://vuetifyjs.com/getting-started/pre-made-layouts',
-    },
-    {
-      text: 'Frequently Asked Questions',
-      href: 'https://vuetifyjs.com/getting-started/frequently-asked-questions',
-    },
-  ];
+
 }
 </script>
+
+<style scoped>
+.home-link {
+  text-decoration: none;
+  color: #000;
+  font-weight: bold;
+}
+</style>
