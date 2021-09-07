@@ -156,8 +156,9 @@
 
 <script lang='ts'>
 import Vue from 'vue';
-import Component from 'vue-class-component'
-import { Watch } from 'vue-property-decorator'
+import Component from 'vue-class-component';
+import { Watch } from 'vue-property-decorator';
+import Store from '@/store/index';
 import { mapGetters } from 'vuex';
 import { Contact } from '@/../lib/classes/contact';
 import { 
@@ -336,8 +337,10 @@ export default class ContactsWidget extends Vue {
     }
   }
 
-  created() {      
+  created() {
+    Store.commit('AppStore/updatingProcessing', true);
     this.contacts = this.getContacts;
+    Store.commit('AppStore/updatingProcessing', false);
   }
 }
 </script>

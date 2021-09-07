@@ -1,5 +1,14 @@
 <template>
   <v-app>
+    <v-overlay :value="getProcessing">
+      <v-progress-circular
+        indeterminate
+        color="primary"
+        :size="100"
+        :width="10"
+        class="progress-circular"
+      ></v-progress-circular>
+    </v-overlay>
     <navigation-drawer
       :navDrawerStatus="navDrawerStatus" />
     <app-bar
@@ -19,6 +28,7 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
 import Store from '@/store/index';
+// import { mapGetters } from 'vuex';
 import AppBar from '@/components/navigation/AppBar.vue';
 import NavigationDrawer from '@/components/navigation/NavigationDrawer.vue';
 import ContactForm from '@/components/forms/ContactForm.vue'
@@ -26,10 +36,13 @@ import { Contact } from '@/../lib/classes/contact';
 
 @Component({
   components: { AppBar, ContactForm, NavigationDrawer },
+  // computed: { ...mapGetters('AppStore',{
+  //   getProcessing: 'getProcessing'}) }
 })
 export default class App extends Vue {
   editContact = false;
   navDrawerStatus: null | boolean = null;
+  getProcessing = false;
   
   closeContactForm(): void {
     this.editContact = false;
@@ -44,10 +57,15 @@ export default class App extends Vue {
   @Watch('$store.state.ContactStore.selectedContact')
   onSelectContactChanged(value: null | Contact, oldVlaue: null | Contact) {
     if (value !== null){
-      this.$data.editContact = true;
+      this.editContact = true;
     } else {
-      this.$data.editContact = false;
+      this.editContact = false;
     }
+  }
+
+  @Watch('$store.state.AppStore.processing')
+  onProcessingChanged(value: boolean) {
+    this.getProcessing = value;
   }
 }
 </script>

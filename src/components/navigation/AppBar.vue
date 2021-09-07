@@ -16,7 +16,7 @@
 
       <v-img
         alt="Vuetify Name"
-        class="shrink mt-1 hidden-sm-and-down"
+        class="shrink mt-1"
         contain
         min-width="400"
         src="/images/blue-book-logo.png"

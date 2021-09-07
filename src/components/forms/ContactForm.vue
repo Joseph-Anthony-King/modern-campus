@@ -60,7 +60,7 @@
               append-icon="mdi-email"
               @click:append="emailContact(contact.email)"
               required
-              readonly='true'></v-text-field>            
+              readonly></v-text-field>            
           </v-row>
           <v-row cols='12' v-if="lookUp">
             <v-text-field
@@ -70,7 +70,7 @@
               append-icon="mdi-phone"
               @click:append="callContact(contact.rawPhone)"
               required
-              readonly='true'></v-text-field>
+              readonly></v-text-field>
           </v-row>
           <v-row cols='12' v-if="!lookUp">
             <v-text-field
