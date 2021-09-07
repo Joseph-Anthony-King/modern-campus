@@ -37,10 +37,14 @@
               :readonly='lookUp'></v-text-field>            
           </v-row>
           <v-row cols='12'>
-            <v-text-field
+            <v-select
               label='State'
-              v-model='contact.state'
-              :readonly='lookUp'></v-text-field>            
+              v-model="contact.state"
+              :items='states'
+              item-text='label'
+              item-value='value'
+              :readonly='lookUp'
+            ></v-select>            
           </v-row>
           <v-row cols='12'>
             <v-text-field
@@ -48,21 +52,39 @@
               v-model='contact.zipcode'
               :readonly='lookUp'></v-text-field>            
           </v-row>
-          <v-row cols='12'>
+          <v-row cols='12' v-if="lookUp">
             <v-text-field
               label='Email'
               v-model='contact.email'
               :rules="emailRules"
+              append-icon="mdi-email"
+              @click:append="emailContact(contact.email)"
               required
-              :readonly='lookUp'></v-text-field>            
+              readonly='true'></v-text-field>            
           </v-row>
-          <v-row cols='12'>
+          <v-row cols='12' v-if="lookUp">
             <v-text-field
               label='Phone'
-              v-model='displayPhone'
+              v-model='contact.phone'
               :rules="phoneRules"
+              append-icon="mdi-phone"
+              @click:append="callContact(contact.rawPhone)"
               required
-              :readonly='lookUp'></v-text-field>            
+              readonly='true'></v-text-field>
+          </v-row>
+          <v-row cols='12' v-if="!lookUp">
+            <v-text-field
+              label='Email'
+              v-model='contact.email'
+              :rules="emailRules"
+              required></v-text-field>            
+          </v-row>
+          <v-row cols='12' v-if="!lookUp">
+            <v-text-field
+              label='Phone'
+              v-model='contact.rawPhone'
+              :rules="phoneRules"
+              required></v-text-field>   
           </v-row>
         </v-container>
       </v-card-text>
@@ -143,7 +165,10 @@ import { mapGetters } from 'vuex';
 import Store from '@/store/index';
 import { Contact } from '@/../lib/classes/contact';
 import { contactService } from '@/services/contactService';
-import { deleteContactHelper } from '@/helpers/contacts/contactHelper';
+import { 
+  deleteContactHelper,
+  emailContactHelper,
+  callContactHelper } from '@/helpers/contacts/contactHelper';
 import { 
   ToastMethods, 
   showToast,
@@ -178,6 +203,18 @@ export default class ContactForm extends Vue {
   getLookUp: any;
   contactFormIsValid = true;
   dirty = false;
+  states: Array<string> = [
+    'AL', 'AK', 'AZ', 'AR', 'CA',
+    'CO', 'CT', 'DE', 'FL', 'GA',
+    'HI', 'ID', 'IL', 'IN', 'IA',
+    'KS', 'KY', 'LA', 'ME', 'MD',
+    'MA', 'MI', 'MN', 'MS', 'MO',
+    'MT', 'NE', 'NV', 'NH', 'NJ',
+    'NM', 'NY', 'NC', 'ND', 'OH',
+    'OK', 'OR', 'PA', 'RI', 'SC',
+    'SD', 'TN', 'TX', 'UT', 'VT',
+    'VA', 'WA', 'WV', 'WI', 'WY'
+  ];
 
   async addContact(): Promise<any> {
     if (this.contactFormIsValid) {
@@ -336,7 +373,15 @@ export default class ContactForm extends Vue {
         this.closeContactForm();
       }
     }
-  }  
+  } 
+
+  emailContact(email: string) {
+    emailContactHelper(email);
+  }
+
+  callContact(phone: string) {
+    callContactHelper(phone);
+  }
 
   closeContactForm(): void {
     this.$emit('close-contact-form-event', null, null);

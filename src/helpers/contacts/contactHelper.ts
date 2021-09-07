@@ -97,3 +97,11 @@ export async function deleteContactHelperCore(
   }
 
 }
+
+export function emailContactHelper(email: string): void {
+  location.href = `mailto:${email}`;
+}
+
+export function callContactHelper(phone: string): void {
+  location.href = `tel:${phone}`;
+}

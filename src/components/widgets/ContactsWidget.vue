@@ -50,7 +50,7 @@
               <td>
                 <v-icon
                   small
-                  @click="phoneContact(item.rawPhone)"
+                  @click="callContact(item.rawPhone)"
                   >
                   mdi-phone
                 </v-icon>
@@ -162,7 +162,9 @@ import { mapGetters } from 'vuex';
 import { Contact } from '@/../lib/classes/contact';
 import { 
   deleteContactHelper, 
-  deleteContactHelperCore } from '@/helpers/contacts/contactHelper';
+  deleteContactHelperCore,
+  emailContactHelper,
+  callContactHelper } from '@/helpers/contacts/contactHelper';
 import { 
   ToastMethods, 
   showToast,
@@ -293,11 +295,11 @@ export default class ContactsWidget extends Vue {
   }
 
   emailContact(email: string) {
-    location.href = `mailto:${email}`;
+    emailContactHelper(email);
   }
 
-  phoneContact(phone: string) {
-    location.href = `tel:${phone}`;
+  callContact(phone: string) {
+    callContactHelper(phone);
   }
 
   async deleteContact(contact: Contact) {
